@@ -1,57 +1,108 @@
-# Reference Manual
+# Password Lock System – Technical Specification
 
-Hệ thống điều khiển khóa mật khẩu tích hợp Keypad Ma Trận 4x4 và màn hình LCD I2C (16x2) được thiết kế bằng System Verilog/Verilog tối ưu cho Kit FPGA **DE10-Lite (10M50DAF484C7G)**.
-
----
-
-## 1. Bản Đồ Phím (Keypad Mapping)
-Bàn phím ma trận 4x4 được quy ước sử dụng như sau:
-- **Phím `0` -> `9`**: Dùng để nhập các chữ số của mật khẩu.
-- **Phím `A`**: Nhấn để Xác nhận (Lệnh Enter/OK).
-- **Phím `B`**: Nhấn để kích hoạt chế độ Đổi mật khẩu chờ (Change Password).
-- **Phím `C`**: Nhấn để Hủy (Cancel) các tác vụ hoặc xóa dữ liệu đang nhập để trở về lại màn hình chờ mặc định.
-- **Phím `*`, `#`, `D`**: Dự phòng, hiện tại không sử dụng bảo đảm trạng thái FSM an toàn.
-
-**Chú ý**: Mật khẩu ban đầu của hệ thống (Default Password) là: **`1234`**
+**Version:** 1.0  
+**Release Date:** April 27, 2026  
+**Target Device:** DE10-Lite Kit (Intel MAX 10 – 10M50DAF484C7G)  
+**Design Language:** System Verilog / Verilog  
 
 ---
 
-## 2. Các Kịch Bản Thao Tác (Use Cases)
+## 1. Overview
 
-### Kịch bản 1: Mở khóa thành công (Nhập đúng mật khẩu)
-1. Ở màn hình chờ, LCD hiển thị dòng chữ: `"Enter Pass:     "` 
-2. Nhấn lần lượt 4 ký tự của mật khẩu đúng (Ví dụ: `1`, `2`, `3`, `4`).
-3. Ứng với mỗi phím nhấn, LCD sẽ hiển thị ký hiệu `*` (giấu mật khẩu gốc).
-4. Nhấn phím **`A`** (Xác nhận/OK).
-5. LCD chuyển sang màn hình phân tích `"Checking...     "`.
-6. Ngay sau đó, LCD báo thành công `"Access Granted! " / "    Welcome     "` và đèn `unlock_led` sẽ sáng.
-7. Hệ thống tự giữ kết quả trong 1 giây để người dùng đọc tín hiệu, sau đó reset tự động về màn hình chờ ban đầu và tắt đèn LED.
+The Password Lock System is an embedded FPGA design that uses a 4×4 matrix keypad as the input device and a 16×2 I²C LCD module as the display interface. Core functionality includes: password authentication for unlocking, password change, and operation cancellation. The design is optimized for the DE10-Lite kit with an explicit Finite State Machine (FSM) architecture, ensuring stable operation, display noise immunity, and ease of extension.
 
-### Kịch bản 2: Nhập sai mật khẩu
-1. Ở màn hình chờ, bạn nhấn 4 phím số bất kỳ nhưng không khớp mật khẩu hiện tại (Ví dụ: `5`, `5`, `6`, `6`).
-2. Màn hình vẫn mã hóa thành dấu `*` bảo mật.
-3. Nhấn phím **`A`** để thử xác nhận.
-4. LCD báo dòng chữ: `"Wrong Password! " / "  Please Wait   "`. Đèn LED mở khóa không sáng.
-5. Sau đúng 1 giây, hệ thống trả lại màn hình chờ ban đầu để bạn nhập lại.
-
-### Kịch bản 3: Thay đổi mật khẩu mới
-1. Ở màn hình chờ mặc định, nhấn phím **`B`** (Nút chức năng đổi pass).
-2. LCD đổi sang thông báo: `"Enter Old Pass: "`.
-3. Bạn phải nhập 4 số của mật khẩu *hiện tại đang sử dụng* (ví dụ mật khẩu mặc định là `1234`) và nhấn nút xác nhận **`A`**.
-    - *Chú ý*: Nếu ở bước này bạn nhập sai mật khẩu cũ, hệ thống sẽ báo Fail `"Wrong Password! "` và đá bạn văng về màn hình chờ mặc định ngay lập tức.
-4. Nếu nhập chính xác mật khẩu cũ, LCD sẽ chuyển sang bảng thông báo: `"Enter New Pass: "`.
-5. Lúc này, bạn có thể nhập 4 số của **Mật khẩu mới** tùy ý (Ví dụ: `9`, `8`, `7`, `6`).
-6. Sau khi nhập đủ 4 số mới, nhấn phím **`A`** lần nữa để lưu. 
-7. Hệ thống sẽ báo `"Pass Changed!   " / "  Successfully  "`. Kể từ lúc này, mật khẩu mới của bạn là `9876`.
-
-### Kịch bản 4: Đăng nhập đang dang dở nhưng muốn hủy (Cancel)
-1. Ở bất kỳ màn hình nào đang chờ gõ số (nhập pass mở khóa hay đổi pass mới...).
-2. Chỉ cần bấm phím **`C`**, toàn bộ số bạn vừa gõ sẽ bị xóa không lưu lại. Hệ thống sẽ ngay lập tức trả về màn hình màn hình chờ an toàn `"Enter Pass   "`.
+Default Password: **`1234`**.
 
 ---
 
-## 3. Chú Ý Khi Setup Phần Cứng FPGA DE10-Lite
-- **Clock**: Cấp xung nhịp chuẩn hệ thống 50MHz vào cổng `clk`.
-- **Reset**: Tín hiệu `rst_n` là Active-Low. Hãy cắm nó vào các nút nhấn Push Button (ví dụ `KEY0`) trên kit DE10-Lite (vì nguyên lý nút nhấn này nhả ra là HIGH(1), nhấn vào là LOW(0)).
-- **I2C SDA/SCL**: Cần khai báo đúng Pull-up Resistors hoặc cấp điện áp 3.3V chuẩn cho hai chân I2C module nối qua GPIO Header.
-- **Khóa LCD Chống nhiễu**: Cấu trúc thay đổi dòng text theo Event Drive (`password_fsm.v`) hoàn toàn tách biệt với quá trình truyền bit (`lcd_display.v`). Bạn không phải lo vấn đề màn hình bị nhấp nháy (flickering) hay lu mờ phần cứng. 
+## 2. Keypad Mapping (4×4 Matrix)
+
+The 4×4 matrix keypad functions are assigned as follows:
+
+| Key   | Function                                               |
+|-------|--------------------------------------------------------|
+| `0`–`9`| Input numeric digits of the password                 |
+| `A`   | Confirm (Enter / OK)                                   |
+| `B`   | Activate Change Password mode                          |
+| `C`   | Cancel – discard current input and return to idle screen |
+| `*`   | Reserved (currently unused, ensures safe FSM states)   |
+| `#`   | Reserved (unused)                                      |
+| `D`   | Reserved (unused)                                      |
+
+**Note:** The system responds only to keypress events (falling edge). Reserved keys do not alter the state machine.
+
+---
+
+## 3. Use Case Specifications
+
+### 3.1 Unlock Successfully
+
+| #  | User Action                                          | System State / LCD Display (Line 1 / Line 2)                |
+|----|------------------------------------------------------|-------------------------------------------------------------|
+| 1  | Power‑On or after Reset                              | `"Enter Pass:     "` / `"                "`                 |
+| 2  | Press four digit keys matching the current password (e.g., `1`, `2`, `3`, `4`) | Each keypress shows a `*` on the LCD (digits masked). After 4 digits: `"****            "` |
+| 3  | Press key `A` (Confirm)                              | `"Checking...     "` / `"                "`                 |
+| 4  | System verifies match successfully                   | `"Unlock Success! "` / `"    Welcome     "`                 |
+|    |                                                      | LED `unlock_led` driven HIGH.                               |
+| 5  | Auto‑timeout after 1 second                          | Returns to idle screen: `"Enter Pass:     "` / `"                "`. LED turns off. |
+
+### 3.2 Wrong Password Entry
+
+| #  | User Action                                          | System State / LCD Display                                     |
+|----|------------------------------------------------------|---------------------------------------------------------------|
+| 1  | At idle screen, press four arbitrary digits that do not match the current password (e.g., `5`, `5`, `6`, `6`) | Display shows `"****            "` on line 1.                |
+| 2  | Press key `A`                                        | `"Wrong Password! "` / `"  Please Wait   "`                 |
+| 3  | System holds error message for 1 second              | LED `unlock_led` remains off.                                |
+| 4  | After 1 second                                       | Automatically returns to idle screen `"Enter Pass:     "`.   |
+
+### 3.3 Change Password
+
+| #  | User Action                                      | System State / LCD Display                                     |
+|----|--------------------------------------------------|---------------------------------------------------------------|
+| 1  | From idle screen, press key `B`                  | `"Enter Old Pass: "` / `"                "`                  |
+| 2  | Enter the 4 digits of the CURRENT password       | Each digit is displayed as `*`.                              |
+| 3  | Press key `A` to confirm old password            | – If match: proceed to step 4.                               |
+|    |                                                  | – If mismatch: `"Wrong Password! "` / `"  Please Wait   "` for 1 second, then return to idle screen. |
+| 4  | Old password verified successfully               | `"Enter New Pass: "` / `"                "`                  |
+| 5  | Enter 4 digits for the NEW password (e.g., `9`, `8`, `7`, `6`) | Each digit is displayed as `*`.                            |
+| 6  | Press key `A` to save new password               | `"Pass Changed!   "` / `"  Successfully  "`                  |
+|    |                                                  | LED `unlock_led` remains off.                                |
+| 7  | End                                              | System returns to idle screen; the new password takes effect immediately. |
+
+### 3.4 Cancel Operation
+
+| #  | User Action                                    | System State / LCD Display                                     |
+|----|------------------------------------------------|---------------------------------------------------------------|
+| 1  | During digit entry (unlock or change password) | Press key `C` at any time.                                    |
+| 2  |                                                | All entered data is discarded; system instantly returns to idle screen: `"Enter Pass:     "` / `"                "`. |
+
+---
+
+## 4. Hardware Requirements and Setup
+
+- **Target Kit:** Terasic DE10‑Lite, FPGA Intel MAX 10 `10M50DAF484C7G`.
+- **Clock:** Apply a 50 MHz clock signal to the `clk` pin (using the on‑board oscillator).
+- **Reset (rst_n):**  
+  - Reset signal is **Active‑Low**.  
+  - Connect `rst_n` to a push button on the kit, e.g., `KEY0`.  
+  - The system is held in reset when the button is pressed (LOW level) and operates when released (HIGH).  
+- **GPIO – I²C (LCD 16×2):**  
+  - The `SDA` and `SCL` lines of the I²C LCD module must be connected to FPGA GPIO pins with external pull‑up resistors suitable for 3.3V logic level.  
+  - The I²C slave address (commonly `0x27` or `0x3F`) must be correctly configured inside the `lcd_display.v` module.  
+- **Indicator LED:**  
+  - `unlock_led`: driven HIGH upon successful unlock. Can be assigned to any on‑board LED (e.g., `LEDR0`).  
+- **Display Noise Immunity:** The FSM block that updates display content operates completely independently from the I²C data transmission state machine, preventing any flickering or ghosting artifacts.
+
+---
+
+## 5. Implementation Notes
+
+- During password entry, each valid numeric keypress is immediately masked on the display as a `*` character for security.  
+- All fixed display strings must be exactly 16 characters long (padded with spaces if necessary).  
+- The 1‑second timer used to hold success/failure messages is derived from the 50 MHz system clock.  
+- All FSM transitions are triggered by keypress events (falling edge), except for the automatic timeout that returns to the idle screen.  
+- The reserved keys (`*`, `#`, `D`) produce no reaction and leave the system in its current safe state.
+
+---
+
+*--- End of Document ---*

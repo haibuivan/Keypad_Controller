@@ -1,6 +1,6 @@
 module clk_divider #(
-    parameter   input_clk_freq  = 50_000_000,      // Input clock 50 MHz (DE10-Lite MAX10_CLK*_50)
-    parameter   output_clk_freq =   1_000_000       // Output clock  1 MHz = 1 us
+    parameter   input_clk_freq  = 50_000_000,       // input clock
+    parameter   output_clk_freq = 1_000_000         // output clock 1MHz = 1us
 )(
     input       clk,
     output      clk_1MHz                                   

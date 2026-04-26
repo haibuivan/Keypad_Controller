@@ -1,139 +1,148 @@
+/*******************************************************************************
+* author:       haihbv
+* date:         2026-04-26
+* module:       password_fsm
+********************************************************************************/
+
 module password_fsm (
-    input  wire        clk,          // 50MHz clock from DE10-Lite
-    input  wire        rst_n,        // Active-low reset
-    input  wire [3:0]  key_code,
-    input  wire        key_valid,
-    output reg [127:0] row1,
-    output reg [127:0] row2,
-    output reg         unlock_led    // Just in case we want a hardware indicator
+    input  wire clk,                    // clock
+    input  wire rst_n,                  // active-low
+    input  wire [3:0]  key_code,        // giá trị khi nhấn phím
+    input  wire key_valid,              // key_valid để biết khi nào vừa nhấn phím
+    output reg [127:0] row1,            // hàng 1 của lcd 128 kí tự
+    output reg [127:0] row2,            // hàng 2 của lcd 128 kí tự
+    output reg         unlock_led       // đèn báo mở khóa
 );
 
-    // =========================================================================
-    // 1. Edge Detection cho Keypad
-    // =========================================================================
-    reg key_valid_d;
+    // khi vừa bấm phím thì key_valid = 1, khi nhả ra thì key_valid = 0 
+    // tránh việc giữ phím bị đọc nhiều lần
+    reg key_valid_d; // nhớ
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) key_valid_d <= 1'b0;
-        else        key_valid_d <= key_valid;
+        else key_valid_d <= key_valid; // lưu giá trị cũ vào key_valid_d
     end
-    wire key_press = key_valid & ~key_valid_d;
+    wire key_press = key_valid & ~key_valid_d; // key_press = 1 khi vừa bấm phím
 
-    // =========================================================================
-    // 2. FSM States Definition (Yêu cầu chỉ rõ FSM)
-    // =========================================================================
-    localparam [3:0] S_IDLE         = 4'd0,
-                     S_ENTER_PASS   = 4'd1,
-                     S_CHECK_PASS   = 4'd2,
-                     S_UNLOCKED     = 4'd3,
-                     S_WRONG_PASS   = 4'd4,
-                     S_CHG_OLD      = 4'd5,
-                     S_CHG_CHK_OLD  = 4'd6,
-                     S_CHG_NEW      = 4'd7,
-                     S_CHG_SUCCESS  = 4'd8;
+    // frame fsm 
+    localparam [3:0] IDLE         = 4'd0, // không làm gì
+                     ENTER_PASS   = 4'd1, // nhập mật khẩu
+                     CHECK_PASS   = 4'd2, // kiểm tra mật khẩu
+                     UNLOCKED     = 4'd3, // mở khóa
+                     WRONG_PASS   = 4'd4, // sai mật khẩu
+                     CHG_OLD      = 4'd5, // nhập mật khẩu cũ
+                     CHG_CHK_OLD  = 4'd6, // kiểm tra mật khẩu cũ
+                     CHG_NEW      = 4'd7, // nhập mật khẩu mới
+                     CHG_SUCCESS  = 4'd8; // đổi mật khẩu thành công
 
     reg [3:0] state, next_state;
 
-    // =========================================================================
-    // 3. Internal Registers
-    // =========================================================================
-    reg [15:0] saved_pass;           // Mật khẩu hiện tại (4 nibbles)
-    reg [15:0] input_pass;           // Mật khẩu người dùng đang nhập
-    reg [2:0]  input_cnt;            // Đếm số ký tự đã nhập (0-4)
+    reg [15:0] saved_pass;           // mật khẩu thật
+    reg [15:0] input_pass;           // mật khẩu người dùng đang nhập
+    reg [2:0]  input_cnt;            // đếm số ký tự đã nhập (0-4)
 
-    // Delay counter logic
+    // delay 1 giây để báo sai mật khẩu
     reg [26:0] delay_cnt;
-    wire       delay_done = (delay_cnt == 27'd50_000_000); // 1 giây với 50MHz
+    wire delay_done = (delay_cnt == 27'd50_000_000); // 1 giây với 50MHz
 
-    // Register cập nhật data an toàn (Synchronous FSM)
+    // decode fsm
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
-            state      <= S_IDLE;
-            saved_pass <= 16'h1234;  // Password mặc định: 1234
+            state <= IDLE;
+            saved_pass <= 16'h1234;  // mật khẩu mặc địch 
             input_pass <= 16'h0000;
             input_cnt  <= 3'd0;
             delay_cnt  <= 27'd0;
             unlock_led <= 1'b0;
         end else begin
             case (state)
-                S_IDLE: begin
+                IDLE: begin
+                    // reset 
                     unlock_led <= 1'b0;
                     input_cnt  <= 3'd0;
                     input_pass <= 16'h0000;
                     delay_cnt  <= 27'd0;
 
+                    // nếu nhấn phím 
                     if (key_press) begin
-                        if (key_code <= 4'h9) begin // Nhập số
-                            input_pass <= {input_pass[11:0], key_code};
-                            input_cnt  <= input_cnt + 1'b1;
-                            state      <= S_ENTER_PASS;
-                        end else if (key_code == 4'hB) begin // Phím B: Change Pass
-                            state      <= S_CHG_OLD;
+                        if (key_code <= 4'h9) begin // chỉ lấy các số từ 0-9
+                            input_pass <= {input_pass[11:0], key_code}; // mỗi lần nhấn phím đẩy số cũ sang trái, thêm số mới vào phải giống shift left
+                            input_cnt  <= input_cnt + 1'b1;             // mỗi lấy bấm tăng số lượng ký tự
+                            state <= ENTER_PASS;                        // chuyển sang trạng thái nhập mật khẩu
+                        end else if (key_code == 4'hB) begin // phím B: đổi mật khẩu
+                            state <= CHG_OLD;
                         end
                     end
                 end
 
-                S_ENTER_PASS: begin
+                // nhập mật khẩu
+                ENTER_PASS: begin
                     if (key_press) begin
                         if (key_code <= 4'h9 && input_cnt < 4) begin
-                            input_pass <= {input_pass[11:0], key_code};
-                            input_cnt  <= input_cnt + 1'b1;
-                        end else if (key_code == 4'hC) begin // Phím C: Xóa/Cancel
-                            state <= S_IDLE;
-                        end else if (key_code == 4'hA) begin // Phím A: Enter/Submit
-                            if (input_cnt == 4) state <= S_CHECK_PASS;
+                        input_pass <= {input_pass[11:0], key_code};     // mỗi lần nhấn phím đẩy số cũ sang trái, thêm số mới vào phải giống shift left
+                        input_cnt  <= input_cnt + 1'b1;                 // mỗi lấy bấm tăng số lượng ký tự
+                        end else if (key_code == 4'hC) begin            // phím C: Xóa/Cancel
+                            state <= IDLE;
+                        end else if (key_code == 4'hA) begin            // phím A: Enter/Submit
+                            if (input_cnt == 4) state <= CHECK_PASS;
                         end
                     end
                 end
 
-                S_CHECK_PASS: begin
+                // kiểm tra mật khẩu 
+                CHECK_PASS: begin
                     if (input_pass == saved_pass) begin
-                        state <= S_UNLOCKED;
+                        state <= UNLOCKED;
                     end else begin
-                        state <= S_WRONG_PASS;
+                        state <= WRONG_PASS;
                     end
                 end
 
-                S_UNLOCKED: begin
-                    unlock_led <= 1'b1;
-                    if (delay_done) state <= S_IDLE;
-                    else            delay_cnt <= delay_cnt + 1'b1;
+                // mở khóa thành công
+                UNLOCKED: begin
+                    unlock_led <= 1'b1;                                 // bật đèn báo mở khóa
+                    if (delay_done) state <= IDLE;                      // delay 1s rồi quay về IDLE
+                    else delay_cnt <= delay_cnt + 1'b1;
                 end
 
-                S_WRONG_PASS: begin
-                    if (delay_done) state <= S_IDLE;
-                    else            delay_cnt <= delay_cnt + 1'b1;
+                // sai mật khẩu
+                WRONG_PASS: begin
+                    if (delay_done) state <= IDLE;
+                    else delay_cnt <= delay_cnt + 1'b1;
                 end
 
-                S_CHG_OLD: begin
+                // nhập mật khẩu cũ
+                CHG_OLD: begin
                     if (key_press) begin
                         if (key_code <= 4'h9 && input_cnt < 4) begin
                             input_pass <= {input_pass[11:0], key_code};
                             input_cnt  <= input_cnt + 1'b1;
                         end else if (key_code == 4'hC) begin
-                            state <= S_IDLE;
+                            state <= IDLE;
                         end else if (key_code == 4'hA) begin
-                            if (input_cnt == 4) state <= S_CHG_CHK_OLD;
+                            if (input_cnt == 4) state <= CHG_CHK_OLD;
                         end
                     end
                 end
 
-                S_CHG_CHK_OLD: begin
+                // kiểm tra mật khẩu cũ
+                CHG_CHK_OLD: begin
                     if (input_pass == saved_pass) begin
-                        state      <= S_CHG_NEW;
+                        state <= CHG_NEW;
                         input_cnt  <= 3'd0;
                         input_pass <= 16'h0000;
                     end else begin
-                        state      <= S_WRONG_PASS; // Báo sai rồi quay về IDLE
+                        state <= WRONG_PASS; // Báo sai rồi quay về IDLE
                     end
                 end
 
-                S_CHG_NEW: begin
+                // nhập mật khẩu mới
+                CHG_NEW: begin
                     if (key_press) begin
                         if (key_code <= 4'h9 && input_cnt < 4) begin
                             input_pass <= {input_pass[11:0], key_code};
                             input_cnt  <= input_cnt + 1'b1;
                         end else if (key_code == 4'hC) begin
-                            state <= S_IDLE;
+                            state <= IDLE;
                         end else if (key_code == 4'hA) begin
                             if (input_cnt == 4) begin
                                 saved_pass <= input_pass; // Lưu pass mới
@@ -144,19 +153,18 @@ module password_fsm (
                     end
                 end
 
-                S_CHG_SUCCESS: begin
-                    if (delay_done) state <= S_IDLE;
-                    else            delay_cnt <= delay_cnt + 1'b1;
+                // đổi mật khẩu thành công
+                CHG_SUCCESS: begin
+                    if (delay_done) state <= IDLE;
+                    else delay_cnt <= delay_cnt + 1'b1;
                 end
 
-                default: state <= S_IDLE;
+                default: state <= IDLE;
             endcase
         end
     end
 
-    // =========================================================================
-    // 4. Decode Số Lượng Ký Tự (*) Ra LCD 
-    // =========================================================================
+    // hiển thị số lượng ký tự đã nhập
     reg [127:0] star_str;
     always @(*) begin
         case (input_cnt)
@@ -169,44 +177,42 @@ module password_fsm (
         endcase
     end
 
-    // =========================================================================
-    // 5. Output Logic (Hiển thị LCD) - Không ảnh hưởng LCD timing
-    // =========================================================================
+    // hiển thị LCD
     always @(*) begin
         case (state)
-            S_IDLE: begin
+            IDLE: begin
                 row1 = "Enter Pass:     ";
                 row2 = "  A:OK B:Change ";
             end
-            S_ENTER_PASS: begin
+            ENTER_PASS: begin
                 row1 = "Enter Pass:     ";
                 row2 = star_str;
             end
-            S_CHECK_PASS: begin
+            CHECK_PASS: begin
                 row1 = "Checking...     ";
                 row2 = "                ";
             end
-            S_UNLOCKED: begin
-                row1 = "Access Granted! ";
+            UNLOCKED: begin
+                row1 = "Unlock Success! ";
                 row2 = "    Welcome     ";
             end
-            S_WRONG_PASS: begin
+            WRONG_PASS: begin
                 row1 = "Wrong Password! ";
                 row2 = "  Please Wait   ";
             end
-            S_CHG_OLD: begin
+            CHG_OLD: begin
                 row1 = "Enter Old Pass: ";
                 row2 = star_str;
             end
-            S_CHG_CHK_OLD: begin
+            CHG_CHK_OLD: begin
                 row1 = "Checking...     ";
                 row2 = "                ";
             end
-            S_CHG_NEW: begin
+            CHG_NEW: begin
                 row1 = "Enter New Pass: ";
                 row2 = star_str;
             end
-            S_CHG_SUCCESS: begin
+            CHG_SUCCESS: begin
                 row1 = "Pass Changed!   ";
                 row2 = "  Successfully  ";
             end

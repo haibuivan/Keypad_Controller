@@ -19,6 +19,7 @@ module top_module(
     wire [3:0]      key_code;
     wire            key_valid;
 
+    // 1. Module Quét phím (Keypad 4x4)
     keypad_scanner keypad_scanner_inst (
         .clk        (clk),
         .col        (col),
@@ -27,6 +28,7 @@ module top_module(
         .key_valid  (key_valid)
     );
 
+    // 2. Module FSM Điều khiển mật khẩu
     password_fsm password_fsm_inst (
         .clk        (clk),
         .rst_n      (rst_n),
