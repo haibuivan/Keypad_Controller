@@ -73,7 +73,7 @@ module lcd_display(
                 Write:      next_state = WaitWrite;
                 WaitWrite:  next_state = done_write ? WaitDelay : WaitWrite;
                 WaitDelay:  next_state = (ptr == 6'd39) ? Done : ((cnt == DELAY) ? Write : WaitDelay);
-                Done:       next_state = Done;
+                Done:       next_state = (cnt == 21'd50_000) ? Write : Done; // Chờ 50ms (50_000 us) rồi vẽ lại màn hình
             endcase
         end
     end
@@ -110,6 +110,8 @@ module lcd_display(
             ptr <= 6'd0;
         else if (state == Write)
             ptr <= ptr + 1'b1;
+        else if (state == Done && cnt == 21'd50_000)
+            ptr <= 6'd5; // Loop lại từ lệnh chuyển con trỏ (Tránh xoá/chớp màn hình)
         else
             ptr <= ptr;
     end

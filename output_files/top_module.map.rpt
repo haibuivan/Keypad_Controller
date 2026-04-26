@@ -1,5 +1,5 @@
 Analysis & Synthesis report for top_module
-Mon Apr 27 00:13:48 2026
+Mon Apr 27 01:02:38 2026
 Quartus Prime Version 25.1std.0 Build 1129 10/21/2025 SC Lite Edition
 
 
@@ -16,16 +16,17 @@ Quartus Prime Version 25.1std.0 Build 1129 10/21/2025 SC Lite Edition
   8. State Machine - |top_module|lcd_write_cmd_data:lcd_write_cmd_data_inst|state
   9. State Machine - |top_module|lcd_write_cmd_data:lcd_write_cmd_data_inst|i2c_writeframe:i2c_writframe_inst|state
  10. State Machine - |top_module|lcd_display:lcd_display_inst|state
- 11. Registers Removed During Synthesis
- 12. General Register Statistics
- 13. Inverted Register Statistics
- 14. Multiplexer Restructuring Statistics (Restructuring Performed)
- 15. Parameter Settings for User Entity Instance: clk_divider:clk_1MHz_gen
- 16. Port Connectivity Checks: "lcd_write_cmd_data:lcd_write_cmd_data_inst"
- 17. Port Connectivity Checks: "lcd_display:lcd_display_inst"
- 18. Post-Synthesis Netlist Statistics for Top Partition
- 19. Elapsed Time Per Partition
- 20. Analysis & Synthesis Messages
+ 11. State Machine - |top_module|password_fsm:password_fsm_inst|state
+ 12. Registers Removed During Synthesis
+ 13. General Register Statistics
+ 14. Inverted Register Statistics
+ 15. Multiplexer Restructuring Statistics (Restructuring Performed)
+ 16. Parameter Settings for User Entity Instance: clk_divider:clk_1MHz_gen
+ 17. Port Connectivity Checks: "lcd_write_cmd_data:lcd_write_cmd_data_inst"
+ 18. Port Connectivity Checks: "lcd_display:lcd_display_inst"
+ 19. Post-Synthesis Netlist Statistics for Top Partition
+ 20. Elapsed Time Per Partition
+ 21. Analysis & Synthesis Messages
 
 
 
@@ -52,16 +53,16 @@ on the Quartus Prime software download page.
 +--------------------------------------------------------------------------------------+
 ; Analysis & Synthesis Summary                                                         ;
 +------------------------------------+-------------------------------------------------+
-; Analysis & Synthesis Status        ; Successful - Mon Apr 27 00:13:48 2026           ;
+; Analysis & Synthesis Status        ; Successful - Mon Apr 27 01:02:38 2026           ;
 ; Quartus Prime Version              ; 25.1std.0 Build 1129 10/21/2025 SC Lite Edition ;
 ; Revision Name                      ; top_module                                      ;
 ; Top-level Entity Name              ; top_module                                      ;
 ; Family                             ; MAX 10                                          ;
-; Total logic elements               ; 259                                             ;
-;     Total combinational functions  ; 252                                             ;
-;     Dedicated logic registers      ; 166                                             ;
-; Total registers                    ; 166                                             ;
-; Total pins                         ; 4                                               ;
+; Total logic elements               ; 599                                             ;
+;     Total combinational functions  ; 579                                             ;
+;     Dedicated logic registers      ; 284                                             ;
+; Total registers                    ; 284                                             ;
+; Total pins                         ; 13                                              ;
 ; Total virtual pins                 ; 0                                               ;
 ; Total memory bits                  ; 0                                               ;
 ; Embedded Multiplier 9-bit elements ; 0                                               ;
@@ -179,44 +180,46 @@ on the Quartus Prime software download page.
 +----------------------------------+-----------------+------------------------+---------------------------------------------------------------+---------+
 ; File Name with User-Entered Path ; Used in Netlist ; File Type              ; File Name with Absolute Path                                  ; Library ;
 +----------------------------------+-----------------+------------------------+---------------------------------------------------------------+---------+
+; src/password_fsm.v               ; yes             ; User Verilog HDL File  ; /home/haihbv/Desktop/D23DTMT_TKLG_13/src/password_fsm.v       ;         ;
 ; src/top_module.v                 ; yes             ; User Verilog HDL File  ; /home/haihbv/Desktop/D23DTMT_TKLG_13/src/top_module.v         ;         ;
 ; src/lcd_write_cmd_data.v         ; yes             ; User Verilog HDL File  ; /home/haihbv/Desktop/D23DTMT_TKLG_13/src/lcd_write_cmd_data.v ;         ;
 ; src/lcd_display.v                ; yes             ; User Verilog HDL File  ; /home/haihbv/Desktop/D23DTMT_TKLG_13/src/lcd_display.v        ;         ;
+; src/keypad_scanner.v             ; yes             ; User Verilog HDL File  ; /home/haihbv/Desktop/D23DTMT_TKLG_13/src/keypad_scanner.v     ;         ;
 ; src/i2c_writeframe.v             ; yes             ; User Verilog HDL File  ; /home/haihbv/Desktop/D23DTMT_TKLG_13/src/i2c_writeframe.v     ;         ;
 ; src/clk_divider.v                ; yes             ; User Verilog HDL File  ; /home/haihbv/Desktop/D23DTMT_TKLG_13/src/clk_divider.v        ;         ;
 +----------------------------------+-----------------+------------------------+---------------------------------------------------------------+---------+
 
 
-+--------------------------------------------------------------------------------------+
-; Analysis & Synthesis Resource Usage Summary                                          ;
-+---------------------------------------------+----------------------------------------+
-; Resource                                    ; Usage                                  ;
-+---------------------------------------------+----------------------------------------+
-; Estimated Total logic elements              ; 259                                    ;
-;                                             ;                                        ;
-; Total combinational functions               ; 252                                    ;
-; Logic element usage by number of LUT inputs ;                                        ;
-;     -- 4 input functions                    ; 104                                    ;
-;     -- 3 input functions                    ; 32                                     ;
-;     -- <=2 input functions                  ; 116                                    ;
-;                                             ;                                        ;
-; Logic elements by mode                      ;                                        ;
-;     -- normal mode                          ; 157                                    ;
-;     -- arithmetic mode                      ; 95                                     ;
-;                                             ;                                        ;
-; Total registers                             ; 166                                    ;
-;     -- Dedicated logic registers            ; 166                                    ;
-;     -- I/O registers                        ; 0                                      ;
-;                                             ;                                        ;
-; I/O pins                                    ; 4                                      ;
-;                                             ;                                        ;
-; Embedded Multiplier 9-bit elements          ; 0                                      ;
-;                                             ;                                        ;
-; Maximum fan-out node                        ; clk_divider:clk_1MHz_gen|clk_1MHz_temp ;
-; Maximum fan-out                             ; 134                                    ;
-; Total fan-out                               ; 1294                                   ;
-; Average fan-out                             ; 3.03                                   ;
-+---------------------------------------------+----------------------------------------+
++-----------------------------------------------------------+
+; Analysis & Synthesis Resource Usage Summary               ;
++---------------------------------------------+-------------+
+; Resource                                    ; Usage       ;
++---------------------------------------------+-------------+
+; Estimated Total logic elements              ; 599         ;
+;                                             ;             ;
+; Total combinational functions               ; 579         ;
+; Logic element usage by number of LUT inputs ;             ;
+;     -- 4 input functions                    ; 280         ;
+;     -- 3 input functions                    ; 60          ;
+;     -- <=2 input functions                  ; 239         ;
+;                                             ;             ;
+; Logic elements by mode                      ;             ;
+;     -- normal mode                          ; 424         ;
+;     -- arithmetic mode                      ; 155         ;
+;                                             ;             ;
+; Total registers                             ; 284         ;
+;     -- Dedicated logic registers            ; 284         ;
+;     -- I/O registers                        ; 0           ;
+;                                             ;             ;
+; I/O pins                                    ; 13          ;
+;                                             ;             ;
+; Embedded Multiplier 9-bit elements          ; 0           ;
+;                                             ;             ;
+; Maximum fan-out node                        ; rst_n~input ;
+; Maximum fan-out                             ; 200         ;
+; Total fan-out                               ; 2796        ;
+; Average fan-out                             ; 3.14        ;
++---------------------------------------------+-------------+
 
 
 +-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -224,11 +227,13 @@ on the Quartus Prime software download page.
 +-------------------------------------------------+---------------------+---------------------------+-------------+------------+--------------+---------+-----------+------+--------------+------------+------------------------------------------------------------------------------------------+--------------------+--------------+
 ; Compilation Hierarchy Node                      ; Combinational ALUTs ; Dedicated Logic Registers ; Memory Bits ; UFM Blocks ; DSP Elements ; DSP 9x9 ; DSP 18x18 ; Pins ; Virtual Pins ; ADC blocks ; Full Hierarchy Name                                                                      ; Entity Name        ; Library Name ;
 +-------------------------------------------------+---------------------+---------------------------+-------------+------------+--------------+---------+-----------+------+--------------+------------+------------------------------------------------------------------------------------------+--------------------+--------------+
-; |top_module                                     ; 252 (0)             ; 166 (0)                   ; 0           ; 0          ; 0            ; 0       ; 0         ; 4    ; 0            ; 0          ; |top_module                                                                              ; top_module         ; work         ;
-;    |clk_divider:clk_1MHz_gen|                   ; 46 (46)             ; 33 (33)                   ; 0           ; 0          ; 0            ; 0       ; 0         ; 0    ; 0            ; 0          ; |top_module|clk_divider:clk_1MHz_gen                                                     ; clk_divider        ; work         ;
-;    |lcd_display:lcd_display_inst|               ; 72 (72)             ; 42 (42)                   ; 0           ; 0          ; 0            ; 0       ; 0         ; 0    ; 0            ; 0          ; |top_module|lcd_display:lcd_display_inst                                                 ; lcd_display        ; work         ;
+; |top_module                                     ; 579 (1)             ; 284 (0)                   ; 0           ; 0          ; 0            ; 0       ; 0         ; 13   ; 0            ; 0          ; |top_module                                                                              ; top_module         ; work         ;
+;    |clk_divider:clk_1MHz_gen|                   ; 47 (47)             ; 33 (33)                   ; 0           ; 0          ; 0            ; 0       ; 0         ; 0    ; 0            ; 0          ; |top_module|clk_divider:clk_1MHz_gen                                                     ; clk_divider        ; work         ;
+;    |keypad_scanner:keypad_scanner_inst|         ; 71 (71)             ; 45 (45)                   ; 0           ; 0          ; 0            ; 0       ; 0         ; 0    ; 0            ; 0          ; |top_module|keypad_scanner:keypad_scanner_inst                                           ; keypad_scanner     ; work         ;
+;    |lcd_display:lcd_display_inst|               ; 199 (199)           ; 42 (42)                   ; 0           ; 0          ; 0            ; 0       ; 0         ; 0    ; 0            ; 0          ; |top_module|lcd_display:lcd_display_inst                                                 ; lcd_display        ; work         ;
 ;    |lcd_write_cmd_data:lcd_write_cmd_data_inst| ; 134 (63)            ; 91 (47)                   ; 0           ; 0          ; 0            ; 0       ; 0         ; 0    ; 0            ; 0          ; |top_module|lcd_write_cmd_data:lcd_write_cmd_data_inst                                   ; lcd_write_cmd_data ; work         ;
 ;       |i2c_writeframe:i2c_writframe_inst|       ; 71 (71)             ; 44 (44)                   ; 0           ; 0          ; 0            ; 0       ; 0         ; 0    ; 0            ; 0          ; |top_module|lcd_write_cmd_data:lcd_write_cmd_data_inst|i2c_writeframe:i2c_writframe_inst ; i2c_writeframe     ; work         ;
+;    |password_fsm:password_fsm_inst|             ; 127 (127)           ; 73 (73)                   ; 0           ; 0          ; 0            ; 0       ; 0         ; 0    ; 0            ; 0          ; |top_module|password_fsm:password_fsm_inst                                               ; password_fsm       ; work         ;
 +-------------------------------------------------+---------------------+---------------------------+-------------+------------+--------------+---------+-----------+------+--------------+------------+------------------------------------------------------------------------------------------+--------------------+--------------+
 Note: For table entries with two numbers listed, the numbers in parentheses indicate the number of resources of the given type used by the specific entity alone. The numbers listed outside of parentheses indicate the total resources of the given type used by the specific entity and all of its sub-entities in the hierarchy.
 
@@ -294,23 +299,45 @@ Encoding Type:  One-Hot
 +-----------------+------------+-----------------+-------------+--------------+-----------------+
 
 
-+-----------------------------------------------------------------------------------------------------------+
-; Registers Removed During Synthesis                                                                        ;
-+--------------------------------------------------------------------------------------+--------------------+
-; Register name                                                                        ; Reason for Removal ;
-+--------------------------------------------------------------------------------------+--------------------+
-; lcd_write_cmd_data:lcd_write_cmd_data_inst|state~4                                   ; Lost fanout        ;
-; lcd_write_cmd_data:lcd_write_cmd_data_inst|state~5                                   ; Lost fanout        ;
-; lcd_write_cmd_data:lcd_write_cmd_data_inst|state~6                                   ; Lost fanout        ;
-; lcd_write_cmd_data:lcd_write_cmd_data_inst|state~7                                   ; Lost fanout        ;
-; lcd_write_cmd_data:lcd_write_cmd_data_inst|i2c_writeframe:i2c_writframe_inst|state~4 ; Lost fanout        ;
-; lcd_write_cmd_data:lcd_write_cmd_data_inst|i2c_writeframe:i2c_writframe_inst|state~5 ; Lost fanout        ;
-; lcd_write_cmd_data:lcd_write_cmd_data_inst|i2c_writeframe:i2c_writframe_inst|state~6 ; Lost fanout        ;
-; lcd_write_cmd_data:lcd_write_cmd_data_inst|i2c_writeframe:i2c_writframe_inst|state~7 ; Lost fanout        ;
-; lcd_display:lcd_display_inst|state~4                                                 ; Lost fanout        ;
-; lcd_display:lcd_display_inst|state~6                                                 ; Lost fanout        ;
-; Total Number of Removed Registers = 10                                               ;                    ;
-+--------------------------------------------------------------------------------------+--------------------+
+Encoding Type:  One-Hot
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; State Machine - |top_module|password_fsm:password_fsm_inst|state                                                                                                                                     ;
++---------------------+-----------------+---------------------+-----------------+--------------------+------------------+--------------------+--------------------+--------------+---------------------+
+; Name                ; state.S_CHG_NEW ; state.S_CHG_CHK_OLD ; state.S_CHG_OLD ; state.S_WRONG_PASS ; state.S_UNLOCKED ; state.S_CHECK_PASS ; state.S_ENTER_PASS ; state.S_IDLE ; state.S_CHG_SUCCESS ;
++---------------------+-----------------+---------------------+-----------------+--------------------+------------------+--------------------+--------------------+--------------+---------------------+
+; state.S_IDLE        ; 0               ; 0                   ; 0               ; 0                  ; 0                ; 0                  ; 0                  ; 0            ; 0                   ;
+; state.S_ENTER_PASS  ; 0               ; 0                   ; 0               ; 0                  ; 0                ; 0                  ; 1                  ; 1            ; 0                   ;
+; state.S_CHECK_PASS  ; 0               ; 0                   ; 0               ; 0                  ; 0                ; 1                  ; 0                  ; 1            ; 0                   ;
+; state.S_UNLOCKED    ; 0               ; 0                   ; 0               ; 0                  ; 1                ; 0                  ; 0                  ; 1            ; 0                   ;
+; state.S_WRONG_PASS  ; 0               ; 0                   ; 0               ; 1                  ; 0                ; 0                  ; 0                  ; 1            ; 0                   ;
+; state.S_CHG_OLD     ; 0               ; 0                   ; 1               ; 0                  ; 0                ; 0                  ; 0                  ; 1            ; 0                   ;
+; state.S_CHG_CHK_OLD ; 0               ; 1                   ; 0               ; 0                  ; 0                ; 0                  ; 0                  ; 1            ; 0                   ;
+; state.S_CHG_NEW     ; 1               ; 0                   ; 0               ; 0                  ; 0                ; 0                  ; 0                  ; 1            ; 0                   ;
+; state.S_CHG_SUCCESS ; 0               ; 0                   ; 0               ; 0                  ; 0                ; 0                  ; 0                  ; 1            ; 1                   ;
++---------------------+-----------------+---------------------+-----------------+--------------------+------------------+--------------------+--------------------+--------------+---------------------+
+
+
++--------------------------------------------------------------------------------------------------------------------------------------------------+
+; Registers Removed During Synthesis                                                                                                               ;
++--------------------------------------------------------------------------------------+-----------------------------------------------------------+
+; Register name                                                                        ; Reason for Removal                                        ;
++--------------------------------------------------------------------------------------+-----------------------------------------------------------+
+; keypad_scanner:keypad_scanner_inst|row_idx_d[0]                                      ; Merged with keypad_scanner:keypad_scanner_inst|row_idx[0] ;
+; lcd_write_cmd_data:lcd_write_cmd_data_inst|state~4                                   ; Lost fanout                                               ;
+; lcd_write_cmd_data:lcd_write_cmd_data_inst|state~5                                   ; Lost fanout                                               ;
+; lcd_write_cmd_data:lcd_write_cmd_data_inst|state~6                                   ; Lost fanout                                               ;
+; lcd_write_cmd_data:lcd_write_cmd_data_inst|state~7                                   ; Lost fanout                                               ;
+; lcd_write_cmd_data:lcd_write_cmd_data_inst|i2c_writeframe:i2c_writframe_inst|state~4 ; Lost fanout                                               ;
+; lcd_write_cmd_data:lcd_write_cmd_data_inst|i2c_writeframe:i2c_writframe_inst|state~5 ; Lost fanout                                               ;
+; lcd_write_cmd_data:lcd_write_cmd_data_inst|i2c_writeframe:i2c_writframe_inst|state~6 ; Lost fanout                                               ;
+; lcd_write_cmd_data:lcd_write_cmd_data_inst|i2c_writeframe:i2c_writframe_inst|state~7 ; Lost fanout                                               ;
+; lcd_display:lcd_display_inst|state~4                                                 ; Lost fanout                                               ;
+; lcd_display:lcd_display_inst|state~6                                                 ; Lost fanout                                               ;
+; password_fsm:password_fsm_inst|state~8                                               ; Lost fanout                                               ;
+; password_fsm:password_fsm_inst|state~9                                               ; Lost fanout                                               ;
+; password_fsm:password_fsm_inst|state~10                                              ; Lost fanout                                               ;
+; Total Number of Removed Registers = 14                                               ;                                                           ;
++--------------------------------------------------------------------------------------+-----------------------------------------------------------+
 
 
 +------------------------------------------------------+
@@ -318,12 +345,12 @@ Encoding Type:  One-Hot
 +----------------------------------------------+-------+
 ; Statistic                                    ; Value ;
 +----------------------------------------------+-------+
-; Total registers                              ; 166   ;
-; Number of registers using Synchronous Clear  ; 66    ;
-; Number of registers using Synchronous Load   ; 1     ;
-; Number of registers using Asynchronous Clear ; 121   ;
+; Total registers                              ; 284   ;
+; Number of registers using Synchronous Clear  ; 90    ;
+; Number of registers using Synchronous Load   ; 27    ;
+; Number of registers using Asynchronous Clear ; 194   ;
 ; Number of registers using Asynchronous Load  ; 0     ;
-; Number of registers using Clock Enable       ; 28    ;
+; Number of registers using Clock Enable       ; 117   ;
 ; Number of registers using Preset             ; 0     ;
 +----------------------------------------------+-------+
 
@@ -333,22 +360,33 @@ Encoding Type:  One-Hot
 +--------------------------------------------------------------------------------------+---------+
 ; Inverted Register                                                                    ; Fan out ;
 +--------------------------------------------------------------------------------------+---------+
+; password_fsm:password_fsm_inst|saved_pass[2]                                         ; 1       ;
+; password_fsm:password_fsm_inst|saved_pass[4]                                         ; 1       ;
+; password_fsm:password_fsm_inst|saved_pass[5]                                         ; 1       ;
+; password_fsm:password_fsm_inst|saved_pass[9]                                         ; 1       ;
+; password_fsm:password_fsm_inst|saved_pass[12]                                        ; 1       ;
 ; lcd_write_cmd_data:lcd_write_cmd_data_inst|i2c_writeframe:i2c_writframe_inst|sda_en  ; 2       ;
 ; lcd_write_cmd_data:lcd_write_cmd_data_inst|i2c_writeframe:i2c_writframe_inst|cnt_clr ; 21      ;
 ; lcd_write_cmd_data:lcd_write_cmd_data_inst|cnt_clr                                   ; 22      ;
 ; lcd_display:lcd_display_inst|cnt_clr                                                 ; 22      ;
-; Total number of inverted registers = 4                                               ;         ;
+; Total number of inverted registers = 9                                               ;         ;
 +--------------------------------------------------------------------------------------+---------+
 
 
-+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-; Multiplexer Restructuring Statistics (Restructuring Performed)                                                                                                                                                         ;
-+--------------------+-----------+---------------+----------------------+------------------------+------------+----------------------------------------------------------------------------------------------------------+
-; Multiplexer Inputs ; Bus Width ; Baseline Area ; Area if Restructured ; Saving if Restructured ; Registered ; Example Multiplexer Output                                                                               ;
-+--------------------+-----------+---------------+----------------------+------------------------+------------+----------------------------------------------------------------------------------------------------------+
-; 5:1                ; 4 bits    ; 12 LEs        ; 8 LEs                ; 4 LEs                  ; Yes        ; |top_module|lcd_write_cmd_data:lcd_write_cmd_data_inst|i2c_data[4]                                       ;
-; 3:1                ; 5 bits    ; 10 LEs        ; 10 LEs               ; 0 LEs                  ; No         ; |top_module|lcd_write_cmd_data:lcd_write_cmd_data_inst|i2c_writeframe:i2c_writframe_inst|next_state.Ack2 ;
-+--------------------+-----------+---------------+----------------------+------------------------+------------+----------------------------------------------------------------------------------------------------------+
++---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Multiplexer Restructuring Statistics (Restructuring Performed)                                                                                                                                                            ;
++--------------------+-----------+---------------+----------------------+------------------------+------------+-------------------------------------------------------------------------------------------------------------+
+; Multiplexer Inputs ; Bus Width ; Baseline Area ; Area if Restructured ; Saving if Restructured ; Registered ; Example Multiplexer Output                                                                                  ;
++--------------------+-----------+---------------+----------------------+------------------------+------------+-------------------------------------------------------------------------------------------------------------+
+; 3:1                ; 6 bits    ; 12 LEs        ; 6 LEs                ; 6 LEs                  ; Yes        ; |top_module|lcd_display:lcd_display_inst|ptr[3]                                                             ;
+; 3:1                ; 20 bits   ; 40 LEs        ; 20 LEs               ; 20 LEs                 ; Yes        ; |top_module|keypad_scanner:keypad_scanner_inst|debounce_cnt[14]                                             ;
+; 5:1                ; 4 bits    ; 12 LEs        ; 8 LEs                ; 4 LEs                  ; Yes        ; |top_module|lcd_write_cmd_data:lcd_write_cmd_data_inst|i2c_data[6]                                          ;
+; 64:1               ; 4 bits    ; 168 LEs       ; 40 LEs               ; 128 LEs                ; Yes        ; |top_module|keypad_scanner:keypad_scanner_inst|key_code[2]                                                  ;
+; 6:1                ; 27 bits   ; 108 LEs       ; 27 LEs               ; 81 LEs                 ; Yes        ; |top_module|password_fsm:password_fsm_inst|delay_cnt[8]                                                     ;
+; 8:1                ; 19 bits   ; 95 LEs        ; 19 LEs               ; 76 LEs                 ; Yes        ; |top_module|password_fsm:password_fsm_inst|input_pass[4]                                                    ;
+; 3:1                ; 5 bits    ; 10 LEs        ; 10 LEs               ; 0 LEs                  ; No         ; |top_module|lcd_write_cmd_data:lcd_write_cmd_data_inst|i2c_writeframe:i2c_writframe_inst|next_state.AckDone ;
+; 11:1               ; 3 bits    ; 21 LEs        ; 12 LEs               ; 9 LEs                  ; No         ; |top_module|password_fsm:password_fsm_inst|Selector52                                                       ;
++--------------------+-----------+---------------+----------------------+------------------------+------------+-------------------------------------------------------------------------------------------------------------+
 
 
 +-----------------------------------------------------------------------+
@@ -377,139 +415,11 @@ Note: In order to hide this table in the UI and the text report file, please set
 
 +----------------------------------------------------------+
 ; Port Connectivity Checks: "lcd_display:lcd_display_inst" ;
-+----------------+-------+----------+----------------------+
-; Port           ; Type  ; Severity ; Details              ;
-+----------------+-------+----------+----------------------+
-; ena            ; Input ; Info     ; Stuck at VCC         ;
-; row1[110..109] ; Input ; Info     ; Stuck at VCC         ;
-; row1[107..106] ; Input ; Info     ; Stuck at VCC         ;
-; row1[102..101] ; Input ; Info     ; Stuck at VCC         ;
-; row1[94..93]   ; Input ; Info     ; Stuck at VCC         ;
-; row1[86..85]   ; Input ; Info     ; Stuck at VCC         ;
-; row1[78..77]   ; Input ; Info     ; Stuck at VCC         ;
-; row1[70..69]   ; Input ; Info     ; Stuck at VCC         ;
-; row1[62..61]   ; Input ; Info     ; Stuck at VCC         ;
-; row1[30..29]   ; Input ; Info     ; Stuck at VCC         ;
-; row1[27..24]   ; Input ; Info     ; Stuck at VCC         ;
-; row1[127..126] ; Input ; Info     ; Stuck at GND         ;
-; row1[124..119] ; Input ; Info     ; Stuck at GND         ;
-; row1[117..115] ; Input ; Info     ; Stuck at GND         ;
-; row1[100..98]  ; Input ; Info     ; Stuck at GND         ;
-; row1[96..95]   ; Input ; Info     ; Stuck at GND         ;
-; row1[92..91]   ; Input ; Info     ; Stuck at GND         ;
-; row1[84..83]   ; Input ; Info     ; Stuck at GND         ;
-; row1[81..79]   ; Input ; Info     ; Stuck at GND         ;
-; row1[76..75]   ; Input ; Info     ; Stuck at GND         ;
-; row1[73..71]   ; Input ; Info     ; Stuck at GND         ;
-; row1[68..67]   ; Input ; Info     ; Stuck at GND         ;
-; row1[60..59]   ; Input ; Info     ; Stuck at GND         ;
-; row1[57..54]   ; Input ; Info     ; Stuck at GND         ;
-; row1[52..47]   ; Input ; Info     ; Stuck at GND         ;
-; row1[45..41]   ; Input ; Info     ; Stuck at GND         ;
-; row1[37..36]   ; Input ; Info     ; Stuck at GND         ;
-; row1[34..33]   ; Input ; Info     ; Stuck at GND         ;
-; row1[17..14]   ; Input ; Info     ; Stuck at GND         ;
-; row1[12..6]    ; Input ; Info     ; Stuck at GND         ;
-; row1[4..0]     ; Input ; Info     ; Stuck at GND         ;
-; row1[125]      ; Input ; Info     ; Stuck at VCC         ;
-; row1[118]      ; Input ; Info     ; Stuck at VCC         ;
-; row1[114]      ; Input ; Info     ; Stuck at VCC         ;
-; row1[113]      ; Input ; Info     ; Stuck at GND         ;
-; row1[112]      ; Input ; Info     ; Stuck at VCC         ;
-; row1[111]      ; Input ; Info     ; Stuck at GND         ;
-; row1[108]      ; Input ; Info     ; Stuck at GND         ;
-; row1[105]      ; Input ; Info     ; Stuck at GND         ;
-; row1[104]      ; Input ; Info     ; Stuck at VCC         ;
-; row1[103]      ; Input ; Info     ; Stuck at GND         ;
-; row1[97]       ; Input ; Info     ; Stuck at VCC         ;
-; row1[90]       ; Input ; Info     ; Stuck at VCC         ;
-; row1[89]       ; Input ; Info     ; Stuck at GND         ;
-; row1[88]       ; Input ; Info     ; Stuck at VCC         ;
-; row1[87]       ; Input ; Info     ; Stuck at GND         ;
-; row1[82]       ; Input ; Info     ; Stuck at VCC         ;
-; row1[74]       ; Input ; Info     ; Stuck at VCC         ;
-; row1[66]       ; Input ; Info     ; Stuck at VCC         ;
-; row1[65]       ; Input ; Info     ; Stuck at GND         ;
-; row1[64]       ; Input ; Info     ; Stuck at VCC         ;
-; row1[63]       ; Input ; Info     ; Stuck at GND         ;
-; row1[58]       ; Input ; Info     ; Stuck at VCC         ;
-; row1[53]       ; Input ; Info     ; Stuck at VCC         ;
-; row1[46]       ; Input ; Info     ; Stuck at VCC         ;
-; row1[40]       ; Input ; Info     ; Stuck at VCC         ;
-; row1[39]       ; Input ; Info     ; Stuck at GND         ;
-; row1[38]       ; Input ; Info     ; Stuck at VCC         ;
-; row1[35]       ; Input ; Info     ; Stuck at VCC         ;
-; row1[32]       ; Input ; Info     ; Stuck at VCC         ;
-; row1[31]       ; Input ; Info     ; Stuck at GND         ;
-; row1[28]       ; Input ; Info     ; Stuck at GND         ;
-; row1[23]       ; Input ; Info     ; Stuck at GND         ;
-; row1[22]       ; Input ; Info     ; Stuck at VCC         ;
-; row1[21]       ; Input ; Info     ; Stuck at GND         ;
-; row1[20]       ; Input ; Info     ; Stuck at VCC         ;
-; row1[19]       ; Input ; Info     ; Stuck at GND         ;
-; row1[18]       ; Input ; Info     ; Stuck at VCC         ;
-; row1[13]       ; Input ; Info     ; Stuck at VCC         ;
-; row1[5]        ; Input ; Info     ; Stuck at VCC         ;
-; row2[110..108] ; Input ; Info     ; Stuck at VCC         ;
-; row2[102..101] ; Input ; Info     ; Stuck at VCC         ;
-; row2[82..81]   ; Input ; Info     ; Stuck at VCC         ;
-; row2[78..77]   ; Input ; Info     ; Stuck at VCC         ;
-; row2[70..69]   ; Input ; Info     ; Stuck at VCC         ;
-; row2[67..65]   ; Input ; Info     ; Stuck at VCC         ;
-; row2[46..45]   ; Input ; Info     ; Stuck at VCC         ;
-; row2[38..37]   ; Input ; Info     ; Stuck at VCC         ;
-; row2[127..126] ; Input ; Info     ; Stuck at GND         ;
-; row2[124..119] ; Input ; Info     ; Stuck at GND         ;
-; row2[117..114] ; Input ; Info     ; Stuck at GND         ;
-; row2[112..111] ; Input ; Info     ; Stuck at GND         ;
-; row2[98..97]   ; Input ; Info     ; Stuck at GND         ;
-; row2[95..94]   ; Input ; Info     ; Stuck at GND         ;
-; row2[92..87]   ; Input ; Info     ; Stuck at GND         ;
-; row2[80..79]   ; Input ; Info     ; Stuck at GND         ;
-; row2[76..73]   ; Input ; Info     ; Stuck at GND         ;
-; row2[64..62]   ; Input ; Info     ; Stuck at GND         ;
-; row2[60..55]   ; Input ; Info     ; Stuck at GND         ;
-; row2[53..52]   ; Input ; Info     ; Stuck at GND         ;
-; row2[50..47]   ; Input ; Info     ; Stuck at GND         ;
-; row2[44..41]   ; Input ; Info     ; Stuck at GND         ;
-; row2[34..33]   ; Input ; Info     ; Stuck at GND         ;
-; row2[31..30]   ; Input ; Info     ; Stuck at GND         ;
-; row2[28..22]   ; Input ; Info     ; Stuck at GND         ;
-; row2[20..14]   ; Input ; Info     ; Stuck at GND         ;
-; row2[12..6]    ; Input ; Info     ; Stuck at GND         ;
-; row2[4..0]     ; Input ; Info     ; Stuck at GND         ;
-; row2[125]      ; Input ; Info     ; Stuck at VCC         ;
-; row2[118]      ; Input ; Info     ; Stuck at VCC         ;
-; row2[113]      ; Input ; Info     ; Stuck at VCC         ;
-; row2[107]      ; Input ; Info     ; Stuck at GND         ;
-; row2[106]      ; Input ; Info     ; Stuck at VCC         ;
-; row2[105]      ; Input ; Info     ; Stuck at GND         ;
-; row2[104]      ; Input ; Info     ; Stuck at VCC         ;
-; row2[103]      ; Input ; Info     ; Stuck at GND         ;
-; row2[100]      ; Input ; Info     ; Stuck at GND         ;
-; row2[99]       ; Input ; Info     ; Stuck at VCC         ;
-; row2[96]       ; Input ; Info     ; Stuck at VCC         ;
-; row2[93]       ; Input ; Info     ; Stuck at VCC         ;
-; row2[86]       ; Input ; Info     ; Stuck at VCC         ;
-; row2[85]       ; Input ; Info     ; Stuck at GND         ;
-; row2[84]       ; Input ; Info     ; Stuck at VCC         ;
-; row2[83]       ; Input ; Info     ; Stuck at GND         ;
-; row2[72]       ; Input ; Info     ; Stuck at VCC         ;
-; row2[71]       ; Input ; Info     ; Stuck at GND         ;
-; row2[68]       ; Input ; Info     ; Stuck at GND         ;
-; row2[61]       ; Input ; Info     ; Stuck at VCC         ;
-; row2[54]       ; Input ; Info     ; Stuck at VCC         ;
-; row2[51]       ; Input ; Info     ; Stuck at VCC         ;
-; row2[40]       ; Input ; Info     ; Stuck at VCC         ;
-; row2[39]       ; Input ; Info     ; Stuck at GND         ;
-; row2[36]       ; Input ; Info     ; Stuck at GND         ;
-; row2[35]       ; Input ; Info     ; Stuck at VCC         ;
-; row2[32]       ; Input ; Info     ; Stuck at VCC         ;
-; row2[29]       ; Input ; Info     ; Stuck at VCC         ;
-; row2[21]       ; Input ; Info     ; Stuck at VCC         ;
-; row2[13]       ; Input ; Info     ; Stuck at VCC         ;
-; row2[5]        ; Input ; Info     ; Stuck at VCC         ;
-+----------------+-------+----------+----------------------+
++------+-------+----------+--------------------------------+
+; Port ; Type  ; Severity ; Details                        ;
++------+-------+----------+--------------------------------+
+; ena  ; Input ; Info     ; Stuck at VCC                   ;
++------+-------+----------+--------------------------------+
 
 
 +-----------------------------------------------------+
@@ -517,28 +427,29 @@ Note: In order to hide this table in the UI and the text report file, please set
 +-----------------------+-----------------------------+
 ; Type                  ; Count                       ;
 +-----------------------+-----------------------------+
-; boundary_port         ; 4                           ;
-; cycloneiii_ff         ; 166                         ;
-;     CLR               ; 42                          ;
+; boundary_port         ; 13                          ;
+; cycloneiii_ff         ; 284                         ;
+;     CLR               ; 53                          ;
 ;     CLR SCLR          ; 63                          ;
-;     ENA               ; 9                           ;
-;     ENA CLR           ; 15                          ;
-;     ENA CLR SLD       ; 1                           ;
-;     ENA SCLR          ; 3                           ;
-;     plain             ; 33                          ;
+;     ENA               ; 19                          ;
+;     ENA CLR           ; 44                          ;
+;     ENA CLR SCLR      ; 27                          ;
+;     ENA CLR SLD       ; 7                           ;
+;     ENA SLD           ; 20                          ;
+;     plain             ; 51                          ;
 ; cycloneiii_io_obuf    ; 1                           ;
-; cycloneiii_lcell_comb ; 252                         ;
-;     arith             ; 95                          ;
-;         2 data inputs ; 94                          ;
-;         3 data inputs ; 1                           ;
-;     normal            ; 157                         ;
-;         1 data inputs ; 5                           ;
-;         2 data inputs ; 17                          ;
-;         3 data inputs ; 31                          ;
-;         4 data inputs ; 104                         ;
+; cycloneiii_lcell_comb ; 582                         ;
+;     arith             ; 155                         ;
+;         2 data inputs ; 155                         ;
+;     normal            ; 427                         ;
+;         0 data inputs ; 1                           ;
+;         1 data inputs ; 17                          ;
+;         2 data inputs ; 69                          ;
+;         3 data inputs ; 60                          ;
+;         4 data inputs ; 280                         ;
 ;                       ;                             ;
-; Max LUT depth         ; 5.00                        ;
-; Average LUT depth     ; 2.86                        ;
+; Max LUT depth         ; 7.00                        ;
+; Average LUT depth     ; 3.68                        ;
 +-----------------------+-----------------------------+
 
 
@@ -547,7 +458,7 @@ Note: In order to hide this table in the UI and the text report file, please set
 +----------------+--------------+
 ; Partition Name ; Elapsed Time ;
 +----------------+--------------+
-; Top            ; 00:00:01     ;
+; Top            ; 00:00:02     ;
 +----------------+--------------+
 
 
@@ -557,10 +468,12 @@ Note: In order to hide this table in the UI and the text report file, please set
 Info: *******************************************************************
 Info: Running Quartus Prime Analysis & Synthesis
     Info: Version 25.1std.0 Build 1129 10/21/2025 SC Lite Edition
-    Info: Processing started: Mon Apr 27 00:13:40 2026
+    Info: Processing started: Mon Apr 27 01:02:29 2026
 Info: Command: quartus_map --read_settings_files=on --write_settings_files=off top_module -c top_module
 Warning (18236): Number of processors has not been specified which may cause overloading on shared machines.  Set the global assignment NUM_PARALLEL_PROCESSORS in your QSF to an appropriate value for best performance.
 Info (20030): Parallel compilation is enabled and will use 12 of the 12 processors detected
+Info (12021): Found 1 design units, including 1 entities, in source file src/password_fsm.v
+    Info (12023): Found entity 1: password_fsm File: /home/haihbv/Desktop/D23DTMT_TKLG_13/src/password_fsm.v Line: 1
 Info (12021): Found 1 design units, including 1 entities, in source file src/top_module.v
     Info (12023): Found entity 1: top_module File: /home/haihbv/Desktop/D23DTMT_TKLG_13/src/top_module.v Line: 1
 Info (12021): Found 1 design units, including 1 entities, in source file src/lcd_write_cmd_data.v
@@ -574,30 +487,35 @@ Info (12021): Found 1 design units, including 1 entities, in source file src/i2c
 Info (12021): Found 1 design units, including 1 entities, in source file src/clk_divider.v
     Info (12023): Found entity 1: clk_divider File: /home/haihbv/Desktop/D23DTMT_TKLG_13/src/clk_divider.v Line: 1
 Info (12127): Elaborating entity "top_module" for the top level hierarchy
-Info (12128): Elaborating entity "clk_divider" for hierarchy "clk_divider:clk_1MHz_gen" File: /home/haihbv/Desktop/D23DTMT_TKLG_13/src/top_module.v Line: 22
-Info (12128): Elaborating entity "lcd_display" for hierarchy "lcd_display:lcd_display_inst" File: /home/haihbv/Desktop/D23DTMT_TKLG_13/src/top_module.v Line: 34
+Info (12128): Elaborating entity "keypad_scanner" for hierarchy "keypad_scanner:keypad_scanner_inst" File: /home/haihbv/Desktop/D23DTMT_TKLG_13/src/top_module.v Line: 29
+Warning (10230): Verilog HDL assignment warning at keypad_scanner.v(18): truncated value with size 32 to match size of target (15) File: /home/haihbv/Desktop/D23DTMT_TKLG_13/src/keypad_scanner.v Line: 18
+Warning (10230): Verilog HDL assignment warning at keypad_scanner.v(29): truncated value with size 32 to match size of target (2) File: /home/haihbv/Desktop/D23DTMT_TKLG_13/src/keypad_scanner.v Line: 29
+Warning (10230): Verilog HDL assignment warning at keypad_scanner.v(86): truncated value with size 32 to match size of target (20) File: /home/haihbv/Desktop/D23DTMT_TKLG_13/src/keypad_scanner.v Line: 86
+Info (12128): Elaborating entity "password_fsm" for hierarchy "password_fsm:password_fsm_inst" File: /home/haihbv/Desktop/D23DTMT_TKLG_13/src/top_module.v Line: 40
+Info (12128): Elaborating entity "clk_divider" for hierarchy "clk_divider:clk_1MHz_gen" File: /home/haihbv/Desktop/D23DTMT_TKLG_13/src/top_module.v Line: 45
+Info (12128): Elaborating entity "lcd_display" for hierarchy "lcd_display:lcd_display_inst" File: /home/haihbv/Desktop/D23DTMT_TKLG_13/src/top_module.v Line: 57
 Info (10264): Verilog HDL Case Statement information at lcd_display.v(87): all case item expressions in this case statement are onehot File: /home/haihbv/Desktop/D23DTMT_TKLG_13/src/lcd_display.v Line: 87
 Warning (10030): Net "cmd_data_array[39]" at lcd_display.v(26) has no driver or initial value, using a default initial value '0' File: /home/haihbv/Desktop/D23DTMT_TKLG_13/src/lcd_display.v Line: 26
-Info (12128): Elaborating entity "lcd_write_cmd_data" for hierarchy "lcd_write_cmd_data:lcd_write_cmd_data_inst" File: /home/haihbv/Desktop/D23DTMT_TKLG_13/src/top_module.v Line: 46
+Info (12128): Elaborating entity "lcd_write_cmd_data" for hierarchy "lcd_write_cmd_data:lcd_write_cmd_data_inst" File: /home/haihbv/Desktop/D23DTMT_TKLG_13/src/top_module.v Line: 69
 Info (10264): Verilog HDL Case Statement information at lcd_write_cmd_data.v(92): all case item expressions in this case statement are onehot File: /home/haihbv/Desktop/D23DTMT_TKLG_13/src/lcd_write_cmd_data.v Line: 92
 Info (12128): Elaborating entity "i2c_writeframe" for hierarchy "lcd_write_cmd_data:lcd_write_cmd_data_inst|i2c_writeframe:i2c_writframe_inst" File: /home/haihbv/Desktop/D23DTMT_TKLG_13/src/lcd_write_cmd_data.v Line: 173
 Info (10264): Verilog HDL Case Statement information at i2c_writeframe.v(170): all case item expressions in this case statement are onehot File: /home/haihbv/Desktop/D23DTMT_TKLG_13/src/i2c_writeframe.v Line: 170
 Warning (12241): 1 hierarchies have connectivity warnings - see the Connectivity Checks report folder
-Info (13000): Registers with preset signals will power-up high File: /home/haihbv/Desktop/D23DTMT_TKLG_13/src/i2c_writeframe.v Line: 12
+Info (13000): Registers with preset signals will power-up high File: /home/haihbv/Desktop/D23DTMT_TKLG_13/src/password_fsm.v Line: 57
 Info (13003): DEV_CLRn pin will set, and not reset, register with preset signal due to NOT Gate Push-Back
 Info (286030): Timing-Driven Synthesis is running
-Info (17049): 10 registers lost all their fanouts during netlist optimizations.
+Info (17049): 13 registers lost all their fanouts during netlist optimizations.
 Info (16010): Generating hard_block partition "hard_block:auto_generated_inst"
     Info (16011): Adding 0 node(s), including 0 DDIO, 0 PLL, 0 transceiver and 0 LCELL
-Info (21057): Implemented 263 device resources after synthesis - the final resource count might be different
-    Info (21058): Implemented 2 input pins
-    Info (21059): Implemented 1 output pins
+Info (21057): Implemented 614 device resources after synthesis - the final resource count might be different
+    Info (21058): Implemented 6 input pins
+    Info (21059): Implemented 6 output pins
     Info (21060): Implemented 1 bidirectional pins
-    Info (21061): Implemented 259 logic cells
-Info: Quartus Prime Analysis & Synthesis was successful. 0 errors, 3 warnings
-    Info: Peak virtual memory: 467 megabytes
-    Info: Processing ended: Mon Apr 27 00:13:48 2026
-    Info: Elapsed time: 00:00:08
-    Info: Total CPU time (on all processors): 00:00:17
+    Info (21061): Implemented 601 logic cells
+Info: Quartus Prime Analysis & Synthesis was successful. 0 errors, 6 warnings
+    Info: Peak virtual memory: 469 megabytes
+    Info: Processing ended: Mon Apr 27 01:02:38 2026
+    Info: Elapsed time: 00:00:09
+    Info: Total CPU time (on all processors): 00:00:18
 
 

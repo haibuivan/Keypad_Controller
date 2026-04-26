@@ -41,3 +41,15 @@ state.Write 0 0 1 1 0
 state.WaitWrite 0 0 0 1 1 
 state.WaitDelay 0 1 0 1 0 
 state.Done 1 0 0 1 0 
+
+State Machine - |top_module|password_fsm:password_fsm_inst|state
+Name state.S_CHG_NEW state.S_CHG_CHK_OLD state.S_CHG_OLD state.S_WRONG_PASS state.S_UNLOCKED state.S_CHECK_PASS state.S_ENTER_PASS state.S_IDLE state.S_CHG_SUCCESS 
+state.S_IDLE 0 0 0 0 0 0 0 0 0 
+state.S_ENTER_PASS 0 0 0 0 0 0 1 1 0 
+state.S_CHECK_PASS 0 0 0 0 0 1 0 1 0 
+state.S_UNLOCKED 0 0 0 0 1 0 0 1 0 
+state.S_WRONG_PASS 0 0 0 1 0 0 0 1 0 
+state.S_CHG_OLD 0 0 1 0 0 0 0 1 0 
+state.S_CHG_CHK_OLD 0 1 0 0 0 0 0 1 0 
+state.S_CHG_NEW 1 0 0 0 0 0 0 1 0 
+state.S_CHG_SUCCESS 0 0 0 0 0 0 0 1 1 
