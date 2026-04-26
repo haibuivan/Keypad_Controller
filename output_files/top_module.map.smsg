@@ -1,2 +1,0 @@
-Info (10281): Verilog HDL Declaration information at lcd_write_cmd_data.v(10): object "done" differs only in case from object "Done" in the same scope File: /home/haihbv/Desktop/D23DTMT_TKLG_13/src/lcd_write_cmd_data.v Line: 10
-Warning (10268): Verilog HDL information at lcd_display.v(82): always construct contains both blocking and non-blocking assignments File: /home/haihbv/Desktop/D23DTMT_TKLG_13/src/lcd_display.v Line: 82
